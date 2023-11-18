@@ -1,0 +1,14 @@
+Section1: create a QR code:
+    a. pip install qrcode
+    b. pip install pillow       # this is imaging process library
+    c. coding in qr.py
+            import qrcode
+            image = qrcode.make("https://127.0.0.1:8000")
+            image.save("order.png")
+
+Section2: Create Django project and apps
+    a. pip install django
+    b. django-admin startproject mysite .
+    c. python manage.py startapp order_system
+    d. add app to the setting.py under mysite
+    e. python manage.py runserver
