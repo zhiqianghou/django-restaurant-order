@@ -12,3 +12,89 @@ Section2: Create Django project and apps
     c. python manage.py startapp order_system
     d. add app to the setting.py under mysite
     e. python manage.py runserver
+
+Section3: Create a database model
+    a. coding in models.py in order_system
+    b. python manage.py makemigrations
+    c. python manage.py migrate
+
+Section4: Adding class based views
+    a. coding in views.py for two classes of views, one is ListView, one is DetailView
+    b. add index.html and menu_item_detail.html in templates directory
+    c. add urls.py and connect, see coding in urls.py
+    d. add include in urls.py under mysite: path('', include('order_system.urls'))
+    e. run web in different port: python manage.py runserver 8002
+
+Section 5: Create the admin interface
+    a. coding in admin.py and register the .model.Item with the class MenuItemAdmin
+    b. 8000/admin to get access
+    c. create admin access in terminal
+            python manage.py createsuperuser
+    d. add more items
+
+Section 6: Jinja-for-loop to exhibit the items in view interface
+    a. update coding of get_context_data in view.py
+                def get_context_data(self):
+                context = {}
+                context["meals"] = MEAL_TYPE
+                return context
+    b. update the index.html with for loop
+                {% for meal in meals %}
+                    <h3> {{ meal.1 }}</h3>
+                        {% for row in item_list %}
+                             <p>{{row.meal}}</p>
+                             <p>{{row.description}}</p>
+                        {% endfor %}
+                 {% endfor %}
+    c. change view.py code to get context of item_list
+                   def get_context_data(self, **kwargs):
+                    context = super().get_context_data(**kwargs)
+                    context["meals"] = MEAL_TYPE
+                    return context
+
+Section 7: Jinja-if condition filter
+    a. coding in index.html
+                    {% for row in item_list %}
+                        {% if row.meal_type == meal.0 %}
+                        {% if row.status == 0 %}
+                            <h3><del>{{row.meal}}</del></h3>
+                            <p><del>{{row.description}}</del></p>
+                        {% else %}
+                        <h3>{{row.meal}}</h3>
+                        <p>{{row.description}}</p>
+                        {% endif %}
+
+Section 8: Add href link to the item
+    a. use jinja and <a> tag to add url in index.html and update urls.py
+        a.1 coding in index.html
+            <a href="{% url 'menu_item' %}"><h3>{{row.meal}}</h3></a>
+        a.2 coding in urls.py
+                path('/item', views.MenuItemDetail.as_view(), name="menu_item")
+            The Error is as below:
+                AttributeError at //item
+                Generic detail view MenuItemDetail must be called with either an object pk or a slug in the URLconf
+            To correct, add pk (primary key) in urls.py
+                path('item/<int:pk>/', views.MenuItemDetail.as_view(), name="menu_item") # More dynamic with integer
+                                        from the database primary key
+            And update the index.html
+                <a href="{% url 'menu_item' row.pk %}"><h3>{{row.meal}}</h3></a>
+    b. update the templates/menu_item_detail.html
+                    <h1> {{item.meal}} </h1>
+                    <p><h3>{{item.description}}</h3></p>
+                    <p><h4>{{item.price}}</h4></p>
+
+Section 9: Add bootstrap styling
+    a. download the base.html in template
+    b. delete others and keep content in index.html
+            {% extends 'base.html' %}
+            {% block content%}
+                <h1>Restaurant Menu</h1>
+                ...........
+                {% endfor %}
+            {% endblock content%}
+    c. same to menu_item_detail.html
+    d. add style of <div class="container"> in index.html
+    e. add ul tag in index.html and other bootstrap like li classes
+    f. add price using <span> tag
+    g. add styling in menu_item_detail.html, see coding revision
+
